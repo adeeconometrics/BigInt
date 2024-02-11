@@ -1,6 +1,6 @@
 Project Deliverables (MVP)
 
-- [ ] BigInt struct
+- [x] BigInt struct
 - [ ] binary operators (+,-,/,*)
 - [ ] relational operators (==, >=, <=)
 - [ ] inplace-operators
