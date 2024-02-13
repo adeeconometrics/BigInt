@@ -179,6 +179,8 @@ auto BigInt::operator<(const BigInt &rhs) -> bool const {
 }
 
 auto BigInt::operator==(const BigInt &rhs) -> bool const {
+  if (is_negative != rhs.is_negative)
+    return false;
   return std::equal(std::cbegin(num), std::cend(num), std::cbegin(rhs.num));
 }
 
