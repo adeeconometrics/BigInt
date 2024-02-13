@@ -1,9 +1,9 @@
 #ifndef __BIGINT_H__
 #define __BIGINT_H__
 
+#include <ostream>
 #include <string>
 #include <vector>
-#include <ostream>
 
 class BigInt {
 public:
@@ -11,33 +11,49 @@ public:
   BigInt(int t_int);
   BigInt(const std::vector<int> &t_num);
   BigInt(const std::string &t_string);
+  BigInt(const char *t_string);
 
-//   auto operator=(const std::string &t_string) const -> BigInt &;
+  //   auto operator=(const std::string &t_string) const -> BigInt &;
   //  auto operator=(int t_int) const -> BigInt &;
 
-  auto operator+(const BigInt &t_bigint) -> BigInt const;
-  auto operator+(int t_int) -> BigInt const;
-  auto operator+(const std::string &t_string) -> BigInt const;
+  auto operator+(BigInt t_bigint) -> BigInt;
+  // auto operator+(int t_int) -> BigInt const;
+  // auto operator+(const std::string &t_string) -> BigInt const;
 
-//   auto operator-(int t_int) -> BigInt const;
-//   auto operator-(const std::string &t_string) -> BigInt const;
+  auto operator-(BigInt t_bigint) -> BigInt;
+  //   auto operator-(int t_int) -> BigInt const;
+  //   auto operator-(const std::string &t_string) -> BigInt const;
 
-//   auto operator*(int t_int) -> BigInt const;
-//   auto operator*(const std::string &t_string) -> BigInt const;
+  auto operator-() -> BigInt;
+  // auto operator*(const BigInt &t_bigint) -> BigInt const;
+  //   auto operator*(int t_int) -> BigInt const;
+  //   auto operator*(const std::string &t_string) -> BigInt const;
 
-//   auto operator/(int t_int) -> BigInt const;
-//   auto operator/(const std::string &t_string) -> BigInt const;
+  // auto operator/(const BigInt &t_bigint) -> BigInt const;
+  //   auto operator/(int t_int) -> BigInt const;
+  //   auto operator/(const std::string &t_string) -> BigInt const;
 
-  // constexpr auto operator>=()
+  auto operator>=(const BigInt &rhs) -> bool const;
+  auto operator<=(const BigInt &rhs) -> bool const;
+  auto operator>(const BigInt &rhs) -> bool const;
+  auto operator<(const BigInt &rhs) -> bool const;
+  auto operator==(const BigInt &rhs) -> bool const;
 
-friend auto operator<<(std::ostream& os, const BigInt& t_bi) -> std::ostream& {
-  for (auto it = t_bi.num.rbegin(); it != t_bi.num.rend(); ++it) {
-    os << *it;
+  friend auto operator<<(std::ostream &os, const BigInt &t_bi)
+      -> std::ostream & {
+    for (auto it = t_bi.num.rbegin(); it != t_bi.num.rend(); ++it) {
+      os << *it;
+    }
+    return os;
   }
-  return os;
-}
+
+  operator std::string() const;
 
 private:
+  auto shift_left(std::size_t places) -> BigInt const;
+
+private:
+  bool is_negative{false};
   std::vector<int> num;
   static constexpr int base = 10;
 };
