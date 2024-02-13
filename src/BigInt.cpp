@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <string>
-#include <type_traits>
 
 BigInt::BigInt(int t_int) : BigInt(std::to_string(t_int)) {}
 
@@ -22,7 +21,7 @@ BigInt::BigInt(const std::string &t_string) {
   }
 }
 
-BigInt::BigInt(const char *t_string) : BigInt(std::string(t_string)) {}
+BigInt::BigInt(char const *t_string) : BigInt(std::string(t_string)) {}
 
 // auto BigInt::operator=(const std::string &t_string) const -> BigInt & {
 //     return this(t_string);
@@ -83,7 +82,7 @@ auto BigInt::operator-(BigInt t_bigint) -> BigInt {
   if (is_negative && t_bigint.is_negative)
     return t_bigint - *this;
 
-  if (*this < t_bigint)
+  if (*this > t_bigint)
     return -(t_bigint - *this);
 
   BigInt result;
@@ -93,7 +92,7 @@ auto BigInt::operator-(BigInt t_bigint) -> BigInt {
     if (i < t_bigint.num.size())
       diff -= t_bigint.num[i];
     if (diff < 0) {
-      diff += base;
+      diff += 10;
       borrow = 1;
     } else {
       borrow = 0;
@@ -151,21 +150,48 @@ auto BigInt::operator-() -> BigInt {
 
 // auto BigInt::operator/(const std::string &t_string) -> BigInt const {}
 
+auto BigInt::operator>(const BigInt &rhs) -> bool const {
+  if (num.size() != rhs.num.size())
+    return num.size() > rhs.num.size();
+  // if (is_negative != rhs.is_negative)
+  //   return !is_negative;
+
+  const std::size_t len = num.size();
+  for (std::size_t i = len - 1; i >= 0; --i) {
+    if (num[i] != rhs.num[i])
+      return num[i] > rhs.num[i];
+  }
+  return false;
+}
+
+auto BigInt::operator<(const BigInt &rhs) -> bool const {
+  if (num.size() != rhs.num.size())
+    return num.size() < rhs.num.size();
+  // if (is_negative != rhs.is_negative)
+  //   return is_negative;
+
+  const std::size_t len = num.size();
+  for (std::size_t i = len - 1; i >= 0; --i) {
+    if (num[i] != rhs.num[i])
+      return num[i] < rhs.num[i];
+  }
+  return false;
+}
+
+auto BigInt::operator==(const BigInt &rhs) -> bool const {
+  return std::equal(std::cbegin(num), std::cend(num), std::cbegin(rhs.num));
+}
+
+auto BigInt::operator!=(const BigInt &rhs) -> bool const {
+  return !(*this == rhs);
+}
+
 auto BigInt::operator>=(const BigInt &rhs) -> bool const {
-  return static_cast<std::string>(*this) >= static_cast<std::string>(rhs);
+  return (*this) > rhs || (*this) == rhs;
 }
 
 auto BigInt::operator<=(const BigInt &rhs) -> bool const {
-  return static_cast<std::string>(*this) <= static_cast<std::string>(rhs);
-}
-auto BigInt::operator>(const BigInt &rhs) -> bool const {
-  return static_cast<std::string>(*this) > static_cast<std::string>(rhs);
-}
-auto BigInt::operator<(const BigInt &rhs) -> bool const {
-  return static_cast<std::string>(*this) < static_cast<std::string>(rhs);
-}
-auto BigInt::operator==(const BigInt &rhs) -> bool const {
-  return static_cast<std::string>(*this) == static_cast<std::string>(rhs);
+  return (*this) < rhs || (*this) == rhs;
 }
 
 BigInt::operator std::string() const {

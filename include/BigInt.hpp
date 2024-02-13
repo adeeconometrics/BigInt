@@ -1,6 +1,7 @@
 #ifndef __BIGINT_H__
 #define __BIGINT_H__
 
+#include <algorithm>
 #include <ostream>
 #include <string>
 #include <vector>
@@ -11,7 +12,7 @@ public:
   BigInt(int t_int);
   BigInt(const std::vector<int> &t_num);
   BigInt(const std::string &t_string);
-  BigInt(const char *t_string);
+  BigInt(char const *t_string);
 
   //   auto operator=(const std::string &t_string) const -> BigInt &;
   //  auto operator=(int t_int) const -> BigInt &;
@@ -33,15 +34,18 @@ public:
   //   auto operator/(int t_int) -> BigInt const;
   //   auto operator/(const std::string &t_string) -> BigInt const;
 
-  auto operator>=(const BigInt &rhs) -> bool const;
-  auto operator<=(const BigInt &rhs) -> bool const;
   auto operator>(const BigInt &rhs) -> bool const;
   auto operator<(const BigInt &rhs) -> bool const;
   auto operator==(const BigInt &rhs) -> bool const;
+  auto operator!=(const BigInt &rhs) -> bool const;
+  auto operator>=(const BigInt &rhs) -> bool const;
+  auto operator<=(const BigInt &rhs) -> bool const;
 
   friend auto operator<<(std::ostream &os, const BigInt &t_bi)
       -> std::ostream & {
-    for (auto it = t_bi.num.rbegin(); it != t_bi.num.rend(); ++it) {
+    if (t_bi.is_negative)
+      os << "-";
+    for (auto it = std::crbegin(t_bi.num); it != std::crend(t_bi.num); ++it) {
       os << *it;
     }
     return os;
