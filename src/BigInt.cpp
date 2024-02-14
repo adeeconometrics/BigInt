@@ -5,16 +5,16 @@
 
 BigInt::BigInt(int t_int) : BigInt(std::to_string(t_int)) {}
 
-BigInt::BigInt(const std::vector<int> &t_num) : num(t_num) {}
+BigInt::BigInt(const std::vector<int> &t_num, bool t_sign)
+    : num(t_num), is_negative(t_sign) {}
 
 BigInt::BigInt(const std::string &t_string) {
-  auto it = std::cbegin(t_string);
-  if (*it == '-') {
+  if (*std::cbegin(t_string) == '-') {
     is_negative = true;
-    ++it;
   }
 
-  for (; it != std::cend(t_string); ++it) {
+  for (auto it = std::crbegin(t_string) + is_negative;
+       it != std::crend(t_string); ++it) {
     if (*it >= '0' && *it <= '9') {
       num.emplace_back(*it - '0');
     }
@@ -50,7 +50,7 @@ BigInt::BigInt(char const *t_string) : BigInt(std::string(t_string)) {}
 //   return result;
 // }
 
-auto BigInt::operator+(BigInt t_bigint) -> BigInt {
+auto BigInt::operator+(BigInt t_bigint) const -> BigInt {
   if (is_negative && !t_bigint.is_negative)
     return t_bigint - (-*this);
   if (!is_negative && t_bigint.is_negative)
@@ -74,7 +74,7 @@ auto BigInt::operator+(BigInt t_bigint) -> BigInt {
   return result;
 }
 
-auto BigInt::operator-(BigInt t_bigint) -> BigInt {
+auto BigInt::operator-(BigInt t_bigint) const -> BigInt {
   if (is_negative && !t_bigint.is_negative)
     return -((-*this) + t_bigint);
   if (!is_negative && t_bigint.is_negative)
@@ -109,11 +109,8 @@ auto BigInt::operator-(BigInt t_bigint) -> BigInt {
 // auto BigInt::operator-(int t_int) -> BigInt const {}
 
 // auto BigInt::operator-(const std::string &t_string) -> BigInt const {}
-
-auto BigInt::operator-() -> BigInt {
-  this->is_negative = !this->is_negative;
-  return *this;
-}
+// EXPENSIVE
+auto BigInt::operator-() const -> BigInt { return {this->num, !is_negative}; }
 
 // auto BigInt::operator*(const BigInt &t_bigint) -> BigInt const {
 //   BigInt result;
@@ -150,7 +147,7 @@ auto BigInt::operator-() -> BigInt {
 
 // auto BigInt::operator/(const std::string &t_string) -> BigInt const {}
 
-auto BigInt::operator>(const BigInt &rhs) -> bool const {
+auto BigInt::operator>(const BigInt &rhs) const -> bool {
   if (num.size() != rhs.num.size())
     return num.size() > rhs.num.size();
   // if (is_negative != rhs.is_negative)
@@ -164,7 +161,7 @@ auto BigInt::operator>(const BigInt &rhs) -> bool const {
   return false;
 }
 
-auto BigInt::operator<(const BigInt &rhs) -> bool const {
+auto BigInt::operator<(const BigInt &rhs) const -> bool {
   if (num.size() != rhs.num.size())
     return num.size() < rhs.num.size();
   // if (is_negative != rhs.is_negative)
@@ -178,21 +175,21 @@ auto BigInt::operator<(const BigInt &rhs) -> bool const {
   return false;
 }
 
-auto BigInt::operator==(const BigInt &rhs) -> bool const {
+auto BigInt::operator==(const BigInt &rhs) const -> bool {
   if (is_negative != rhs.is_negative)
     return false;
   return std::equal(std::cbegin(num), std::cend(num), std::cbegin(rhs.num));
 }
 
-auto BigInt::operator!=(const BigInt &rhs) -> bool const {
+auto BigInt::operator!=(const BigInt &rhs) const -> bool {
   return !(*this == rhs);
 }
 
-auto BigInt::operator>=(const BigInt &rhs) -> bool const {
+auto BigInt::operator>=(const BigInt &rhs) const -> bool {
   return (*this) > rhs || (*this) == rhs;
 }
 
-auto BigInt::operator<=(const BigInt &rhs) -> bool const {
+auto BigInt::operator<=(const BigInt &rhs) const -> bool {
   return (*this) < rhs || (*this) == rhs;
 }
 

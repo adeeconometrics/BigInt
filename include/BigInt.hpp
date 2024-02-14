@@ -10,22 +10,22 @@ class BigInt {
 public:
   BigInt() = default;
   BigInt(int t_int);
-  BigInt(const std::vector<int> &t_num);
+  BigInt(const std::vector<int> &t_num, bool t_sign = false);
   BigInt(const std::string &t_string);
   BigInt(char const *t_string);
 
   //   auto operator=(const std::string &t_string) const -> BigInt &;
   //  auto operator=(int t_int) const -> BigInt &;
 
-  auto operator+(BigInt t_bigint) -> BigInt;
+  auto operator+(BigInt t_bigint) const -> BigInt;
   // auto operator+(int t_int) -> BigInt const;
   // auto operator+(const std::string &t_string) -> BigInt const;
 
-  auto operator-(BigInt t_bigint) -> BigInt;
+  auto operator-(BigInt t_bigint) const -> BigInt;
   //   auto operator-(int t_int) -> BigInt const;
   //   auto operator-(const std::string &t_string) -> BigInt const;
 
-  auto operator-() -> BigInt;
+  auto operator-() const -> BigInt;
   // auto operator*(const BigInt &t_bigint) -> BigInt const;
   //   auto operator*(int t_int) -> BigInt const;
   //   auto operator*(const std::string &t_string) -> BigInt const;
@@ -34,12 +34,12 @@ public:
   //   auto operator/(int t_int) -> BigInt const;
   //   auto operator/(const std::string &t_string) -> BigInt const;
 
-  auto operator>(const BigInt &rhs) -> bool const;
-  auto operator<(const BigInt &rhs) -> bool const;
-  auto operator==(const BigInt &rhs) -> bool const;
-  auto operator!=(const BigInt &rhs) -> bool const;
-  auto operator>=(const BigInt &rhs) -> bool const;
-  auto operator<=(const BigInt &rhs) -> bool const;
+  auto operator>(const BigInt &rhs) const -> bool;
+  auto operator<(const BigInt &rhs) const -> bool;
+  auto operator==(const BigInt &rhs) const -> bool;
+  auto operator!=(const BigInt &rhs) const -> bool;
+  auto operator>=(const BigInt &rhs) const -> bool;
+  auto operator<=(const BigInt &rhs) const -> bool;
 
   friend auto operator<<(std::ostream &os, const BigInt &t_bi)
       -> std::ostream & {
